@@ -1,0 +1,66 @@
+services:
+  cass_1:
+    networks:
+        cass_network:
+            ipv4_address: 192.168.1.200
+    container_name: cassandra_node_1
+    image: dockerhub.timeweb.cloud/library/cassandra:4.0.13-jammy
+    restart: always
+    ports:
+      - 9042:9042
+    volumes:
+      - /opt/docker/cassandra/node1:/var/lib/cassandra/data
+    environment:
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_CLUSTER_NAME=cassandra_test_cluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_SEEDS=cassandra_node_1,cassandra_node_2,cassandra_node_3
+
+  cass_2:
+    networks:
+        cass_network:
+            ipv4_address: 192.168.1.201
+    container_name: cassandra_node_2
+    image: dockerhub.timeweb.cloud/library/cassandra:4.0.13-jammy
+    restart: always
+    ports:
+      - 9043:9042
+    volumes:
+      - /opt/docker/cassandra/node2:/var/lib/cassandra/data
+    environment:
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_CLUSTER_NAME=cassandra_test_cluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_SEEDS=cassandra_node_1,cassandra_node_2,cassandra_node_3
+
+
+  cass_3:
+    networks:
+        cass_network:
+            ipv4_address: 192.168.1.202
+    container_name: cassandra_node_3
+    image: dockerhub.timeweb.cloud/library/cassandra:4.0.13-jammy
+    restart: always
+    ports:
+      - 9044:9042
+    volumes:
+      - /opt/docker/cassandra/node3:/var/lib/cassandra/data
+    environment:
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_CLUSTER_NAME=cassandra_test_cluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_SEEDS=cassandra_node_1,cassandra_node_2,cassandra_node_3
+
+networks:
+  cass_network:
+    driver: bridge
+    driver_opts:
+      parent: ens19
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
+
